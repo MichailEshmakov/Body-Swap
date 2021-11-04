@@ -2,34 +2,52 @@ using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Swapper : MonoBehaviour
 {
-    [SerializeField] List<Body> bodies;
-    [SerializeField] Pointer _pointer;
+    [SerializeField] private List<Body> _bodies;
+    [SerializeField] private Body _firstEmptyBody;
+    [SerializeField] private Body _secondEmptyBody;
+    [SerializeField] private SwapVisualizer _swapVisualizer;
+    
+    private bool _isSwapping;
+    private Body _firstBody;
+    private Body _secondBody;
+    private BodypartType _bodypartType;
 
-    private void OnEnable()
-    {
-        _pointer.Swapping += Swap;
-    }
+    public bool IsSwapping => _isSwapping;
 
     private void OnDisable()
     {
-        _pointer.Swapping -= Swap;
+        _swapVisualizer.EmptyBodiesSwapped -= OnSwappingVizualized;
     }
 
-    private void Swap(Bodypart firstBodypart, Bodypart secondBodypart)
+    public void Swap(Bodypart firstBodypart, Bodypart secondBodypart)
     {
-        Body body = bodies.FirstOrDefault(body => body.HasBodypart(firstBodypart));
-        Body otherBody = bodies.FirstOrDefault(body => body.HasBodypart(secondBodypart));
+        _firstBody = _bodies.FirstOrDefault(body => body.HasBodypart(firstBodypart));
+        _secondBody = _bodies.FirstOrDefault(body => body.HasBodypart(secondBodypart));
+        _bodypartType = firstBodypart.PartType;
 
-        if (body != null && otherBody != null)
+        if (_firstBody != null && _secondBody != null && _firstBody != _secondBody)
         {
-            body.ExchangeBodyparts(otherBody, firstBodypart.PartType);
+            _isSwapping = true;
+            SwapWithEmptyBodies(_firstBody, _secondBody, firstBodypart.PartType);
+            _swapVisualizer.EmptyBodiesSwapped += OnSwappingVizualized;
+            _swapVisualizer.SwapEmptyBodies(_firstBody.transform.position, _secondBody.transform.position, _firstEmptyBody, _secondEmptyBody);
         }
-        else
-        {
-            Debug.LogError("Not found body of bodypart");
-        }
+    }
+
+    private void SwapWithEmptyBodies(Body firstBody, Body secondBody, BodypartType bodypartType)
+    {
+        firstBody.TryExchangeBodyparts(_firstEmptyBody, bodypartType);
+        secondBody.TryExchangeBodyparts(_secondEmptyBody, bodypartType);
+    }
+
+    private void OnSwappingVizualized()
+    {
+        _swapVisualizer.EmptyBodiesSwapped -= OnSwappingVizualized;
+        SwapWithEmptyBodies(_secondBody, _firstBody, _bodypartType);
+        _isSwapping = false;
     }
 }

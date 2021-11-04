@@ -66,7 +66,7 @@ public class Body : MonoBehaviour
         return partTypes.Length == _parts.Count;
     }
 
-    public void ExchangeBodyparts(Body other, BodypartType bodypartType)
+    public bool TryExchangeBodyparts(Body other, BodypartType bodypartType)
     {
         Bodypart thisBodypart = _parts.FirstOrDefault(part => part.PartType == bodypartType);
         Bodypart otherBodypart = other._parts.FirstOrDefault(part => part.PartType == bodypartType);
@@ -74,10 +74,15 @@ public class Body : MonoBehaviour
         {
             if (thisBodypart.TryExchange(otherBodypart))
             {
-                TryChangeBodypart(otherBodypart);
-                other.TryChangeBodypart(thisBodypart);
+                if (TryChangeBodypart(otherBodypart) && other.TryChangeBodypart(thisBodypart))
+                {
+                    return true;
+                }
             }
         }
+
+        Debug.LogError($"Bodyparts exchanging is failed. {gameObject.name} {other.gameObject.name} {bodypartType}");
+        return false;
     }
 
     public bool HasBodypart(Bodypart bodypart)

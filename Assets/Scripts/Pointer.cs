@@ -7,14 +7,13 @@ public class Pointer : MonoBehaviour
 {
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private float _raycastDistance;
-
-    public event UnityAction<Bodypart, Bodypart> Swapping;
+    [SerializeField] private Swapper _swapper;
 
     private Bodypart _pointedBodypart;
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && _swapper.IsSwapping == false)
         {
             Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, _raycastDistance)
@@ -26,7 +25,7 @@ public class Pointer : MonoBehaviour
                 }
                 else 
                 {
-                    Swapping?.Invoke(_pointedBodypart, bodypartCollider.Bodypart);
+                    _swapper.Swap(_pointedBodypart, bodypartCollider.Bodypart);
                     Unpick();
                 }
             }
