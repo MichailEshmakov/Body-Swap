@@ -11,6 +11,8 @@ public class Pointer : MonoBehaviour
 
     private Bodypart _pointedBodypart;
 
+    public event UnityAction Pointed;
+
     private void Update()
     {
         if (Input.GetMouseButtonDown(0) && _swapper.IsSwapping == false)
@@ -21,24 +23,25 @@ public class Pointer : MonoBehaviour
             {
                 if (_pointedBodypart == null)
                 {
-                    Pick(bodypartCollider.Bodypart);
+                    Point(bodypartCollider.Bodypart);
                 }
                 else 
                 {
                     _swapper.Swap(_pointedBodypart, bodypartCollider.Bodypart);
-                    Unpick();
+                    Unpoint();
                 }
             }
         }
     }
 
-    private void Pick(Bodypart bodypart)
+    private void Point(Bodypart bodypart)
     {
         _pointedBodypart = bodypart;
         bodypart.Select();
+        Pointed?.Invoke();
     }
 
-    private void Unpick()
+    private void Unpoint()
     {
         _pointedBodypart.Deselect();
         _pointedBodypart = null;

@@ -19,6 +19,7 @@ public class Swapper : MonoBehaviour
 
     public bool IsSwapping => _isSwapping;
 
+    public event UnityAction Swapped;
     public event UnityAction BodypartsShuffled;
 
     private void Start()
@@ -57,6 +58,7 @@ public class Swapper : MonoBehaviour
         _swapVisualizer.EmptyBodiesSwapped -= OnSwappingVizualized;
         SwapWithEmptyBodies(_secondBody, _firstBody, _bodypartType);
         _isSwapping = false;
+        Swapped?.Invoke();
     }
 
     private void ShuffleBodyparts()

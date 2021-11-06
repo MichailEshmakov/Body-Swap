@@ -5,12 +5,14 @@ using UnityEngine.Events;
 
 [RequireComponent(typeof(Body))]
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(AudioSource))]
 public class Celebrator : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _confetti;
 
     private Body _body;
     private Animator _animator;
+    private AudioSource _audioSource;
 
     public event UnityAction Celebrated;
 
@@ -18,6 +20,7 @@ public class Celebrator : MonoBehaviour
     {
         _body = GetComponent<Body>();
         _animator = GetComponent<Animator>();
+        _audioSource = GetComponent<AudioSource>();
     }
 
     private void OnEnable()
@@ -40,7 +43,7 @@ public class Celebrator : MonoBehaviour
         }
 
         _confetti.Play();
-
+        _audioSource.Play();
         Celebrated?.Invoke();
     }
 }
