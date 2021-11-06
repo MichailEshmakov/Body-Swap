@@ -36,8 +36,8 @@ public class Body : MonoBehaviour
         Bodypart previousPart = _parts.FirstOrDefault(part => part.PartType == newPart.PartType);
         if (previousPart != null)
         {
-            _parts.Remove(previousPart);
-            _parts.Add(newPart);
+            RemovePart(previousPart);
+            AddPart(newPart);
             if (_level.CurrentState == Level.State.Playing && CheckCompleteness())
             {
                 Completed?.Invoke();
@@ -62,6 +62,16 @@ public class Body : MonoBehaviour
         }
 
         return partTypes.Length == _parts.Count;
+    }
+
+    protected virtual void RemovePart(Bodypart bodypart)
+    {
+        _parts.Remove(bodypart);
+    }
+
+    protected virtual void AddPart(Bodypart bodypart)
+    {
+        _parts.Add(bodypart);
     }
 
     public bool TryExchangeBodyparts(Body other, BodypartType bodypartType)
