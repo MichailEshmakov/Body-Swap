@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -17,6 +18,13 @@ public class Swapper : MonoBehaviour
     private BodypartType _bodypartType;
 
     public bool IsSwapping => _isSwapping;
+
+    public event UnityAction BodypartsShuffled;
+
+    private void Start()
+    {
+        ShuffleBodyparts();
+    }
 
     private void OnDisable()
     {
@@ -49,5 +57,19 @@ public class Swapper : MonoBehaviour
         _swapVisualizer.EmptyBodiesSwapped -= OnSwappingVizualized;
         SwapWithEmptyBodies(_secondBody, _firstBody, _bodypartType);
         _isSwapping = false;
+    }
+
+    private void ShuffleBodyparts()
+    {
+        foreach (Body body in _bodies)
+        {
+            foreach (BodypartType bodypartType in (BodypartType[])Enum.GetValues(typeof(BodypartType)))
+            {
+                Body randomBody = _bodies[UnityEngine.Random.Range(0, _bodies.Count)];
+                body.TryExchangeBodyparts(randomBody, bodypartType);
+            }
+        }
+
+        BodypartsShuffled?.Invoke();
     }
 }

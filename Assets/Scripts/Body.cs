@@ -3,10 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Body : MonoBehaviour
 {
+    [SerializeField] private Level _level;
     [SerializeField] private List<Bodypart> _parts;
+
+    public event UnityAction Completed;
 
     private void OnValidate()
     {
@@ -34,21 +38,15 @@ public class Body : MonoBehaviour
         {
             _parts.Remove(previousPart);
             _parts.Add(newPart);
-            if (CheckCompleteness())
+            if (_level.CurrentState == Level.State.Playing && CheckCompleteness())
             {
-                Celebrate();
+                Completed?.Invoke();
             }
 
             return true;
         }
 
         return false;
-    }
-
-
-    private void Celebrate()
-    {
-
     }
 
     private bool CheckPartsTypes()
