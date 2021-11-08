@@ -1800,7 +1800,6 @@ GameObject:
   m_Component:
   - component: {fileID: 492012177}
   - component: {fileID: 492012176}
-  - component: {fileID: 492012175}
   m_Layer: 6
   m_Name: Swapping Camera
   m_TagString: MainCamera
@@ -1808,14 +1807,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &492012175
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 492012171}
-  m_Enabled: 1
 --- !u!20 &492012176
 Camera:
   m_ObjectHideFlags: 0
