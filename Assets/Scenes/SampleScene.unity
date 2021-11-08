@@ -150,7 +150,7 @@ GameObject:
   - component: {fileID: 36652659}
   - component: {fileID: 36652658}
   m_Layer: 0
-  m_Name: AudioPlayer
+  m_Name: SwappingAudioPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

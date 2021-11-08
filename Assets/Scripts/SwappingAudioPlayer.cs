@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class AudioPlayer : MonoBehaviour
+public class SwappingAudioPlayer : MonoBehaviour
 {
     [SerializeField] private Pointer _pointer;
     [SerializeField] private Swapper _swapper;
