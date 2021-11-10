@@ -21,6 +21,7 @@ public class Swapper : MonoBehaviour
 
     public event UnityAction Swapped;
     public event UnityAction BodypartsShuffled;
+    public event UnityAction SwappedWithSame;
 
     private void OnDisable()
     {
@@ -61,12 +62,19 @@ public class Swapper : MonoBehaviour
         _secondBody = _bodies.FirstOrDefault(body => body.HasBodypart(secondBodypart));
         _bodypartType = firstBodypart.PartType;
 
-        if (_firstBody != null && _secondBody != null && _firstBody != _secondBody)
+        if (_firstBody != null && _secondBody != null)
         {
-            _isSwapping = true;
-            SwapWithEmptyBodies(_firstBody, _secondBody, firstBodypart.PartType);
-            _swapVisualizer.EmptyBodiesSwapped += OnSwappingVizualized;
-            _swapVisualizer.SwapEmptyBodies(_firstBody.transform.position, _secondBody.transform.position, _firstEmptyBody, _secondEmptyBody);
+            if (_firstBody != _secondBody)
+            {
+                _isSwapping = true;
+                SwapWithEmptyBodies(_firstBody, _secondBody, firstBodypart.PartType);
+                _swapVisualizer.EmptyBodiesSwapped += OnSwappingVizualized;
+                _swapVisualizer.SwapEmptyBodies(_firstBody.transform.position, _secondBody.transform.position, _firstEmptyBody, _secondEmptyBody);
+            }
+            else
+            {
+                SwappedWithSame?.Invoke();
+            }
         }
     }
 

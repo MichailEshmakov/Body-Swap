@@ -7,11 +7,12 @@ public class Level : MonoBehaviour
 {
     private Swapper _swapper;
     private List<Celebrator> _celebrators;
-    private State _currentState;
+    private State _currentState = State.Initializing;
     private int _comletedBodiesAmount = 0;
 
-    public State CurrentLevelState => _currentState;
+    public State CurrentState => _currentState;
 
+    public event UnityAction Inited;
     public event UnityAction Finishing;
 
     public enum State
@@ -84,5 +85,6 @@ public class Level : MonoBehaviour
         _currentState = State.Initializing;
         SetCelebrators(celebrators);
         SetSwapper(swapper);
+        Inited?.Invoke();
     }
 }

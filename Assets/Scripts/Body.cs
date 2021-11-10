@@ -39,7 +39,7 @@ public class Body : MonoBehaviour
         {
             RemovePart(previousPart);
             AddPart(newPart);
-            if (_level.CurrentLevelState == Level.State.Playing && CheckCompleteness())
+            if (_level.CurrentState == Level.State.Playing && CheckCompleteness())
             {
                 Completed?.Invoke();
             }
