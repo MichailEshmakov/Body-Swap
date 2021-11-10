@@ -101,8 +101,6 @@ public class Body : MonoBehaviour
 
     public void Init(Level level)
     {
-        Debug.Log(gameObject.name);
-        Debug.Log(level.name);
         _level = level;
     }
 }
