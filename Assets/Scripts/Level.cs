@@ -1,14 +1,18 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Level : MonoBehaviour
 {
-    [SerializeField] private Swapper _swapper;
-    [SerializeField] private List<Celebrator> _celebrators;
-
+    private Swapper _swapper;
+    private List<Celebrator> _celebrators;
+    private State _currentState;
     private int _comletedBodiesAmount = 0;
+
+    public State CurrentLevelState => _currentState;
+
+    public event UnityAction Finishing;
 
     public enum State
     {
@@ -17,28 +21,19 @@ public class Level : MonoBehaviour
         Finish
     }
 
-    private State _currentState;
-
-    public State CurrentState =>_currentState;
-
-    private void Awake()
+    private void OnDisable()
     {
-        _currentState = State.Initializing;
-    }
-
-    private void OnEnable()
-    {
-        _swapper.BodypartsShuffled += OnBodypartsShuffled;
+        _swapper.BodypartsShuffled -= OnBodypartsShuffled;
         foreach (Celebrator celebrator in _celebrators)
         {
-            celebrator.Celebrated += OnCelebrated;
-        }    
+            celebrator.Celebrated -= OnCelebrated;
+        }
     }
 
     private void OnCelebrated()
     {
         _comletedBodiesAmount++;
-        if (_comletedBodiesAmount == _celebrators.Count)
+        if (_comletedBodiesAmount >= _celebrators.Count)
         {
             Finish();
         }
@@ -47,15 +42,47 @@ public class Level : MonoBehaviour
     private void Finish()
     {
         _currentState = State.Finish;
-    }
-
-    private void OnDisable()
-    {
-        _swapper.BodypartsShuffled -= OnBodypartsShuffled;
+        _comletedBodiesAmount = 0;
+        Finishing?.Invoke();
     }
 
     private void OnBodypartsShuffled()
     {
         _currentState = State.Playing;
+    }
+
+    private void SetCelebrators(List<Celebrator> celebrators)
+    {
+        if (_celebrators != null)
+        {
+            foreach (Celebrator celebrator in _celebrators)
+            {
+                celebrator.Celebrated -= OnCelebrated;
+            }
+        }
+
+        _celebrators = celebrators;
+
+        foreach (Celebrator celebrator in _celebrators)
+        {
+            celebrator.Celebrated += OnCelebrated;
+        }
+    }
+
+    private void SetSwapper(Swapper swapper)
+    {
+        if (_swapper != null)
+        {
+            _swapper.BodypartsShuffled -= OnBodypartsShuffled;
+        }
+        _swapper = swapper;
+        _swapper.BodypartsShuffled += OnBodypartsShuffled;
+    }
+
+    public void Init(List<Celebrator> celebrators, Swapper swapper)
+    {
+        _currentState = State.Initializing;
+        SetCelebrators(celebrators);
+        SetSwapper(swapper);
     }
 }

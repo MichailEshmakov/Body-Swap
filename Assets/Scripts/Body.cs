@@ -7,8 +7,9 @@ using UnityEngine.Events;
 
 public class Body : MonoBehaviour
 {
-    [SerializeField] private Level _level;
     [SerializeField] private List<Bodypart> _parts;
+
+    private Level _level;
 
     public event UnityAction Completed;
 
@@ -38,7 +39,7 @@ public class Body : MonoBehaviour
         {
             RemovePart(previousPart);
             AddPart(newPart);
-            if (_level.CurrentState == Level.State.Playing && CheckCompleteness())
+            if (_level.CurrentLevelState == Level.State.Playing && CheckCompleteness())
             {
                 Completed?.Invoke();
             }
@@ -96,5 +97,12 @@ public class Body : MonoBehaviour
     public bool HasBodypart(Bodypart bodypart)
     {
         return _parts.Contains(bodypart);
+    }
+
+    public void Init(Level level)
+    {
+        Debug.Log(gameObject.name);
+        Debug.Log(level.name);
+        _level = level;
     }
 }

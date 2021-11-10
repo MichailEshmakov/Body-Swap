@@ -10,13 +10,13 @@ using cakeslice;
 public class Bodypart : MonoBehaviour
 {
     [SerializeField] private BodypartType _partType;
-    [SerializeField] private ModelType _modelType;
+    [SerializeField] private Model _modelType;
 
     private Outline _outline;
     private SkinnedMeshRenderer _skinnedMeshRenderer;
 
     public BodypartType PartType => _partType;
-    public ModelType ModelType => _modelType;
+    public Model ModelType => _modelType;
 
     public event UnityAction<Bodypart> Exchanging;
     public event UnityAction<Bodypart> Exchanged;
@@ -28,7 +28,7 @@ public class Bodypart : MonoBehaviour
             _partType = partType;
         }
         
-        ModelType modelType = gameObject.GetComponentInParent<ModelType>();
+        Model modelType = gameObject.GetComponentInParent<Model>();
         if (modelType != null)
         {
             _modelType = modelType;

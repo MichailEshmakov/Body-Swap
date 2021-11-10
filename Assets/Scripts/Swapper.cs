@@ -7,11 +7,11 @@ using UnityEngine.Events;
 
 public class Swapper : MonoBehaviour
 {
-    [SerializeField] private List<Body> _bodies;
     [SerializeField] private Body _firstEmptyBody;
     [SerializeField] private Body _secondEmptyBody;
     [SerializeField] private SwapVisualizer _swapVisualizer;
-    
+
+    private List<Body> _bodies;
     private bool _isSwapping;
     private Body _firstBody;
     private Body _secondBody;
@@ -22,29 +22,9 @@ public class Swapper : MonoBehaviour
     public event UnityAction Swapped;
     public event UnityAction BodypartsShuffled;
 
-    private void Start()
-    {
-        ShuffleBodyparts();
-    }
-
     private void OnDisable()
     {
         _swapVisualizer.EmptyBodiesSwapped -= OnSwappingVizualized;
-    }
-
-    public void Swap(Bodypart firstBodypart, Bodypart secondBodypart)
-    {
-        _firstBody = _bodies.FirstOrDefault(body => body.HasBodypart(firstBodypart));
-        _secondBody = _bodies.FirstOrDefault(body => body.HasBodypart(secondBodypart));
-        _bodypartType = firstBodypart.PartType;
-
-        if (_firstBody != null && _secondBody != null && _firstBody != _secondBody)
-        {
-            _isSwapping = true;
-            SwapWithEmptyBodies(_firstBody, _secondBody, firstBodypart.PartType);
-            _swapVisualizer.EmptyBodiesSwapped += OnSwappingVizualized;
-            _swapVisualizer.SwapEmptyBodies(_firstBody.transform.position, _secondBody.transform.position, _firstEmptyBody, _secondEmptyBody);
-        }
     }
 
     private void SwapWithEmptyBodies(Body firstBody, Body secondBody, BodypartType bodypartType)
@@ -73,5 +53,34 @@ public class Swapper : MonoBehaviour
         }
 
         BodypartsShuffled?.Invoke();
+    }
+
+    public void Swap(Bodypart firstBodypart, Bodypart secondBodypart)
+    {
+        _firstBody = _bodies.FirstOrDefault(body => body.HasBodypart(firstBodypart));
+        _secondBody = _bodies.FirstOrDefault(body => body.HasBodypart(secondBodypart));
+        _bodypartType = firstBodypart.PartType;
+
+        if (_firstBody != null && _secondBody != null && _firstBody != _secondBody)
+        {
+            _isSwapping = true;
+            SwapWithEmptyBodies(_firstBody, _secondBody, firstBodypart.PartType);
+            _swapVisualizer.EmptyBodiesSwapped += OnSwappingVizualized;
+            _swapVisualizer.SwapEmptyBodies(_firstBody.transform.position, _secondBody.transform.position, _firstEmptyBody, _secondEmptyBody);
+        }
+    }
+
+    public void InitBodies(List<Body> bodies, Level level)
+    {
+        _bodies = bodies;
+        foreach (Body body in _bodies)
+        {
+            body.Init(level);
+        }
+
+        _firstEmptyBody.Init(level);
+        _secondEmptyBody.Init(level);
+
+        ShuffleBodyparts();
     }
 }

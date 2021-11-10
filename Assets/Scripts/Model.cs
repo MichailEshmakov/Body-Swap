@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ModelType : MonoBehaviour
+public class Model : MonoBehaviour
 {
 
 }
